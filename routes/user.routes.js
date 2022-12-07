@@ -60,5 +60,14 @@ userRouter.post("/login", async (req, res) => {
     }
 })
 
+userRouter.get("/profile", isAuth, async (req, res) => {
+    try {
+        const loggendInUser = req.currentUser;
+        return res.status(200).json(loggendInUser)
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+})
 
 export { userRouter }

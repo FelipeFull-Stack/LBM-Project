@@ -71,4 +71,6 @@ userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     }
 })
 
+
+
 export { userRouter }

@@ -4,7 +4,8 @@ import { UserModel } from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import { isAuth } from "../middlewares/isAuth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
-import { generateKey } from "crypto";
+import attachCurrentUser from "../middlewares/attachCurrentUser.js"
+import { generateToken } from "crypto";
 
 dotenv.config();
 const userRouter = express.Router();
@@ -60,7 +61,7 @@ userRouter.post("/login", async (req, res) => {
     }
 })
 
-userRouter.get("/profile", isAuth, async (req, res) => {
+userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     try {
         const loggendInUser = req.currentUser;
         return res.status(200).json(loggendInUser)

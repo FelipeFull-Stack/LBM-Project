@@ -1,11 +1,11 @@
 import express from "express";
-import * as dotenv from "dotenv";
 import { UserModel } from "../model/user.model.js";
+import * as dotenv from "dotenv";
 import bcrypt from "bcrypt";
-import { isAuth } from "../middlewares/isAuth.js";
-import { isAdmin } from "../middlewares/isAdmin.js";
-import attachCurrentUser from "../middlewares/attachCurrentUser.js"
-import { generateToken } from "crypto";
+import { generateToken } from "../config/jwt.config.js";
+import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+import  isAuth  from "../middlewares/isAuth.js";
+import  isAdmin  from "../middlewares/isAdmin.js";
 
 dotenv.config();
 const userRouter = express.Router();
@@ -70,5 +70,7 @@ userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
         return res.status(500).json(err);
     }
 })
+
+
 
 export { userRouter }

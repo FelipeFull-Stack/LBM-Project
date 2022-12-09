@@ -12,7 +12,28 @@ const userSchema = new Schema({
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
     createdAt: { type: Date, default: new Date(Date.now()) },
-    updateAt: [{ type: Date }]
+    updateAt: [{ type: Date }],
+    age: { type: Number },
+    atuation: {
+        type: String, enum: [
+            "DIREITO DO TRABALHO", 
+            "DIREITO CIVIL", 
+            "DIREITO EMPRESARIAL", 
+            "DIREITO DO CONSUMIDOR",
+            "DIREITO ADMINISTRATIVO",
+            "DIREITO BANCARIO E OPERACOES FINANCEIRAS",
+            "DIREITO ELEITORAL",
+            "ARBITRAGEM E MEDICAO",
+            "DIREITO IMOBILIARIO",
+            "DIREITO AMBIENTAL",
+            "DIREITO CONSTITUCIONAL",
+            "MERCADO DE CAPITAIS E FINTECH",
+            "DIREITO PENAL, PROCESSO PENAL E INQUERITO POLICIAL",
+            "DIREITO PREVIDENCIARIO",
+            "MARCAS E PATENTES",
+            "DIREITO TRIBUTARIO OU FISCAL"
+        ]
+    }
 })
 
 export const UserModel = model("User", userSchema)

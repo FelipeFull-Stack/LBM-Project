@@ -4,8 +4,8 @@ import * as dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt.config.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
-import { isAuth } from "../middlewares/isAuth.js";
-import { isAdmin } from "../middlewares/isAdmin.js";
+import  isAuth  from "../middlewares/isAuth.js";
+import  isAdmin  from "../middlewares/isAdmin.js";
 
 dotenv.config();
 const userRouter = express.Router();

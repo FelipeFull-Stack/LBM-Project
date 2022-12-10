@@ -1,11 +1,11 @@
 import express from "express";
-import { UserModel } from "../model/user.model.js";
 import * as dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt.config.js";
-import attachCurrentUser from "../middlewares/attachCurrentUser.js";
-import  isAuth  from "../middlewares/isAuth.js";
-import  isAdmin  from "../middlewares/isAdmin.js";
+import { attachCurrentUser } from "../middlewares/attachCurrentUser.js";
+import isAuth from "../middlewares/isAuth.js";
+import isAdmin from "../middlewares/isAdmin.js";
+import { UserModel } from "../model/user.model.js";
 
 dotenv.config();
 const userRouter = express.Router();

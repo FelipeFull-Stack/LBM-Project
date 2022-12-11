@@ -20,4 +20,4 @@ async function attachCurrentUser(req, res, next) {
     }
 }
 
-export { attachCurrentUser } 
+export default attachCurrentUser 

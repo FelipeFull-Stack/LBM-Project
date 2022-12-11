@@ -3,10 +3,12 @@ import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
 import { CustomerModel } from "../model/customer.model.js";
+import { UserModel } from "../model/user.model.js";
 
 const customerRouter = express.Router();
 
 //criando o cadastro de um cliente
+//cria um registro automaticamente no perfil do advogado
 customerRouter.post(
     "/",
     isAuth,
@@ -18,6 +20,11 @@ customerRouter.post(
                 ...req.body,
                 advogado: loggedInUser._id
             });
+            await UserModel.findOneAndUpdate(
+                { _id: loggedInUser._id },
+                { $push: { custumers: newCustomer._doc._id } },
+                { runValidators: true }
+            );
             return res.status(201).json(newCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.post Back-end: ${err}`);
@@ -81,32 +88,41 @@ customerRouter.put(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const modifyCustomer = await CustomerModel.findOneAndUpdate(
+            const alteredCustomer = await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { ...req.body },
+                { ...req.body, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
             );
-            return res.status(200).json(modifyCustomer);
+            return res.status(200).json(alteredCustomer);
         } catch (err) {
-            console.log(`Erro em CustomerRouter.get/advogado-clientes/all Back-end: ${err}`);
+            console.log(`Erro em CustomerRouter.put/customer Back-end: ${err}`);
             return res.status(500).json(err);
         }
     }
-)
+);
 
 //deletando um cliente - tornando isActive: "true" turn "false"
+//remove automaticamente o cliente alvo do perfil do advogado
 customerRouter.delete(
     "/:customerId",
     isAuth,
     attachCurrentUser,
     async (req, res) => {
         try {
-            const AdvCustomers = await CustomerModel.findOne(
+            const DesactivCustomer = await CustomerModel.findOne(
                 { _id: req.params.customerId },
-                { isActive: false },
+                { isActive: false, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
             );
-            return res.status(200).json(AdvCustomers);
+            await UserModel.findOneAndUpdate(
+                { customers: req.params.customerId },
+                {
+                    $pull: { customers: req.params.customerId },
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
+            return res.status(200).json(DesactivCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);
             return res.status(500).json(err);

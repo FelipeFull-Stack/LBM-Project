@@ -108,4 +108,38 @@ processRouter.put(
     }
 );
 
+processRouter.delete(
+    "/:processId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const DesactivProcess = await ProcessModel.findOneAndUpdate(
+                { _id: req.params.processId },
+                { isActive: false, $push: { updateAt: new Date(Date.now()) } },
+                { runValidators: true }
+            );
+            await UserModel.findOneAndUpdate(
+                { processes: req.params.processId },
+                {
+                    $pull: { process: req.params.processId },
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
+            await CustomerModel.findOneAndUpdate(
+                { process: req.params.processId },
+                {
+                    process: null,
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
+        } catch (err) {
+            console.log(`Erro em processRouter.delete Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { processRouter }

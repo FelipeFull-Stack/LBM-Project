@@ -109,7 +109,7 @@ customerRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const AdvCustomers = await CustomerModel.findOne(
+            const DesactivCustomer = await CustomerModel.findOne(
                 { _id: req.params.customerId },
                 { isActive: false, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
@@ -122,7 +122,7 @@ customerRouter.delete(
                 },
                 { runValidators: true }
             )
-            return res.status(200).json(AdvCustomers);
+            return res.status(200).json(DesactivCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);
             return res.status(500).json(err);

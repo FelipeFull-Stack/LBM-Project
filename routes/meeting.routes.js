@@ -9,6 +9,8 @@ import { CustomerModel } from "../model/customer.model.js";
 
 const meetingRouter = express.Router();
 
+//criando uma reunião
+//atualizando automaticamente o usuário, o processo e o cliente da reunião
 meetingRouter.post(
     "/:customerId",
     isAuth,
@@ -40,6 +42,22 @@ meetingRouter.post(
             return res.status(201).json(newMeeting);
         } catch (err) {
             console.log(`Erro em meetingRouter.post Back-end ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
+//procurando todas as reuniões
+meetingRouter.get(
+    "/",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const meetings = await MeetingModel.find({});
+            return res.status(200).json(meetings)
+        } catch (err) {
+            console.log(`Erro em meetingRouter.get/all Back-end ${err}`);
             return res.status(500).json(err);
         }
     }

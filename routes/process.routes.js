@@ -88,4 +88,24 @@ processRouter.get(
     }
 );
 
+//alterando um processo
+processRouter.put(
+    "/:processId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const alteredProcess = await ProcessModel.findOneAndUpdate(
+                { _id: req.params.processId },
+                { ...req.body, $push: { updateAt: new Date(Date.now()) } },
+                { runValidators: true }
+            );
+            return res.status(200).json(alteredProcess);
+        } catch (err) {
+            console.log(`Erro em processRouter.put Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { processRouter }

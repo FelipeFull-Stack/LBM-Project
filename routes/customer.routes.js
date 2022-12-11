@@ -95,11 +95,11 @@ customerRouter.put(
             );
             return res.status(200).json(alteredCustomer);
         } catch (err) {
-            console.log(`Erro em CustomerRouter.get/advogado-clientes/all Back-end: ${err}`);
+            console.log(`Erro em CustomerRouter.put/customer Back-end: ${err}`);
             return res.status(500).json(err);
         }
     }
-)
+);
 
 //deletando um cliente - tornando isActive: "true" turn "false"
 //remove automaticamente o cliente alvo do perfil do advogado

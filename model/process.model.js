@@ -29,6 +29,7 @@ const processSchema = new Schema({
         required: true,
         trim: true
     },
+    isActive: { type: Boolean, default: true },
     advogado: { type: Types.ObjectId, ref: "User" },    //one-to-one
     customer: { type: Types.ObjectId, ref: "Customer" },//one-to-one
     meeting: { type: Types.ObjectId, ref: "Meeting" }   //one-to-one

@@ -63,4 +63,19 @@ meetingRouter.get(
     }
 );
 
+meetingRouter.get(
+    "/:meetingId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const meeting = await MeetingModel.findOne({ _id: req.params.meetingId });
+            return res.status(200).json(meeting);
+        } catch (err) {
+            console.log(`Erro em meetingRouter.get/One Back-end ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { meetingRouter }

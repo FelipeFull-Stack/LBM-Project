@@ -74,7 +74,25 @@ customerRouter.get(
     }
 );
 
-//falta o patch
+//alterando um cliente
+customerRouter.put(
+    "/:customerId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const modifyCustomer = await CustomerModel.findOneAndUpdate(
+                { _id: req.params.customerId },
+                { ...req.body },
+                { runValidators: true }
+            );
+            return res.status(200).json(modifyCustomer);
+        } catch (err) {
+            console.log(`Erro em CustomerRouter.get/advogado-clientes/all Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+)
 
 //deletando um cliente - tornando isActive: "true" turn "false"
 customerRouter.delete(

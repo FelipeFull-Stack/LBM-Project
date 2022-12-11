@@ -1,4 +1,4 @@
-import { Schema, model, Types, Types } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const meetingSchema = new Schema({
     date: { type: Date, required: true },

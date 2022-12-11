@@ -42,6 +42,7 @@ customerRouter.get(
     }
 );
 
+//procurando um cliente especifico
 customerRouter.get(
     "/:customerId",
     isAuth,
@@ -52,6 +53,22 @@ customerRouter.get(
             return res.status(200).json(customer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.get/one Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
+//procurando todos os clientes de um advogado especifico
+customerRouter.get(
+    "/:advogadoId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const AdvCustomers = await CustomerModel.findOne({ advogado: req.params.advogadoId });
+            return res.status(200).json(AdvCustomers);
+        } catch (err) {
+            console.log(`Erro em CustomerRouter.get/advogado-clientes/all Back-end: ${err}`);
             return res.status(500).json(err);
         }
     }

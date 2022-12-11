@@ -9,12 +9,12 @@ const userSchema = new Schema({
         trim: true,
         match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm
     },
-    age: { type: Number },
     passwordHash: { type: String, required: true },
+    age: { type: Number },
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],
-    isActive: { type: Boolean, default: "true" }, //usar para fazer verificação de email
+    isActive: { type: Boolean, default: true }, //usar para fazer verificação de email
     function: {
         type: String,
         enum: [

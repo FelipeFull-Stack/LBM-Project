@@ -35,21 +35,25 @@ userRouter.post("/signup", async (req, res) => {
         delete newUser._doc.passwordHash;
         return res.status(201).json(newUser);
     } catch (err) {
-        console.log(err);
+        console.log(`Erro no signup Backend: ${err}`);
         return res.status(500).json(err);
     }
-})
+});
 
 userRouter.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await UserModel.findOne({ email: email });
 
-        if (!user || !(await UserModel.bcrypt.compare(password, user.passwordHash))) {
-            return res.status(404).json({ msg: "Email ou senha inválidos!" });
+        if (!user) {
+            return res.status(404).json({ msg: "Email ou senha invalidos" });
         }
 
-        const keyToken = generateToken(user);
+        if (!(await bcrypt.compare(password, user.passwordHash))) {
+            return res.status(404).json({ msg: "Email ou senha invalidos" });
+        }
+
+        const token = generateToken(user);
 
         return res.status(200).json({
             user: {
@@ -58,23 +62,24 @@ userRouter.post("/login", async (req, res) => {
                 _id: user._id,
                 role: user.role
             },
-            token: keyToken
+            token: token
         })
     } catch (err) {
-        console.log(err);
+        console.log(`Erro no login Backend: ${err}`);
         return res.status(500).json(err);
     }
-})
+});
 
 userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     try {
         const loggendInUser = req.currentUser;
         return res.status(200).json(loggendInUser);
     } catch (err) {
-        console.log(err);
+        console.log(`Erro no profile Backend: ${err}`);
         return res.status(500).json(err);
     }
 })
+
 
 
 

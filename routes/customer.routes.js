@@ -3,6 +3,7 @@ import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
 import { CustomerModel } from "../model/customer.model.js";
+import { UserModel } from "../model/user.model.js";
 
 const customerRouter = express.Router();
 
@@ -18,6 +19,11 @@ customerRouter.post(
                 ...req.body,
                 advogado: loggedInUser._id
             });
+            await UserModel.findOneAndUpdate(
+                { _id: loggedInUser._id },
+                { $push: { custumers: newCustomer._doc._id } },
+                { runValidators: true }
+            )
             return res.status(201).json(newCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.post Back-end: ${err}`);
@@ -83,7 +89,7 @@ customerRouter.put(
         try {
             const modifyCustomer = await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { ...req.body },
+                { ...req.body, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
             );
             return res.status(200).json(modifyCustomer);
@@ -103,9 +109,17 @@ customerRouter.delete(
         try {
             const AdvCustomers = await CustomerModel.findOne(
                 { _id: req.params.customerId },
-                { isActive: false },
+                { isActive: false, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
             );
+            await UserModel.findOneAndUpdate(
+                { customers: req.params.customerId },
+                {
+                    $pull: { customers: req.params.customerId },
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
             return res.status(200).json(AdvCustomers);
         } catch (err) {
             console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);

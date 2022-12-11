@@ -11,9 +11,16 @@ processRouter.post(
     isAuth,
     attachCurrentUser,
     async (req, res) => {
-        const loggendInUser = req.currentUser;
-        const newProcess = ProcessModel.create();
+        try {
+            const loggendInUser = req.currentUser;
+            const newProcess = ProcessModel.create({
+                
+            });
+        } catch (err) {
+            console.log(`Erro em processRouter.post Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
     }
-)
+);
 
 export { processRouter }

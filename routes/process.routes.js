@@ -8,6 +8,8 @@ import { UserModel } from "../model/user.model.js";
 
 const processRouter = express.Router();
 
+//criando o processo do cliente
+//criando um registo automaticamente no cliente e no advogado
 processRouter.post(
     "/:customerId",
     isAuth,
@@ -37,5 +39,36 @@ processRouter.post(
         }
     }
 );
+
+//procurando todos os processos
+processRouter.get(
+    "/",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const processes = await ProcessModel.find({});
+            return res.status(201).json(processes);
+        } catch (err) {
+            console.log(`Erro em processRouter.get/all Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
+processRouter.get(
+    "/:processId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const process = await ProcessModel.findOne({ _id: req.params.processId });
+            return res.status(201).json(process);
+        } catch (err) {
+            console.log(`Erro em processRouter.get/one Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+)
 
 export { processRouter }

@@ -11,8 +11,15 @@ customerRouter.post(
     isAuth,
     attachCurrentUser,
     async (req, res) => {
-        const newCustomer = CustomerModel.create()
+        const loggedInUser = req.currentUser;
+        const newCustomer = CustomerModel.create({
+            ...req.body,
+            advogado: loggedInUser._id
+        });
+        return res.status(201).json(newCustomer);
     }
 );
+
+
 
 export { customerRouter }

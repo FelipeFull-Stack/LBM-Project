@@ -78,4 +78,20 @@ meetingRouter.get(
     }
 );
 
+//procurar as reuniões de um advogado especifico
+meetingRouter.get(
+    "/:advogadoId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const AdvMeetings = await MeetingModel.findOne({ advogado: req.params.advogadoId });
+            return res.status(201).json(AdvMeetings);
+        } catch (err) {
+            console.log(`Erro em meetingRouter.get/advMeetings/all Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { meetingRouter }

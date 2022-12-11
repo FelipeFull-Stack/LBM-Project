@@ -74,4 +74,27 @@ customerRouter.get(
     }
 );
 
+//falta o patch
+
+//deletando um cliente - tornando isActive: "true" turn "false"
+customerRouter.delete(
+    "/:customerId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const AdvCustomers = await CustomerModel.findOne(
+                { _id: req.params.customerId },
+                { isActive: false },
+                { runValidators: true }
+            );
+            return res.status(200).json(AdvCustomers);
+        } catch (err) {
+            console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
+
 export { customerRouter }

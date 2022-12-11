@@ -8,6 +8,7 @@ import { UserModel } from "../model/user.model.js";
 const customerRouter = express.Router();
 
 //criando o cadastro de um cliente
+//cria um registro automaticamente no perfil do advogado
 customerRouter.post(
     "/",
     isAuth,
@@ -23,7 +24,7 @@ customerRouter.post(
                 { _id: loggedInUser._id },
                 { $push: { custumers: newCustomer._doc._id } },
                 { runValidators: true }
-            )
+            );
             return res.status(201).json(newCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.post Back-end: ${err}`);
@@ -87,12 +88,12 @@ customerRouter.put(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const modifyCustomer = await CustomerModel.findOneAndUpdate(
+            const alteredCustomer = await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
                 { ...req.body, $push: { updateAt: new Date(Date.now()) } },
                 { runValidators: true }
             );
-            return res.status(200).json(modifyCustomer);
+            return res.status(200).json(alteredCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.get/advogado-clientes/all Back-end: ${err}`);
             return res.status(500).json(err);
@@ -101,6 +102,7 @@ customerRouter.put(
 )
 
 //deletando um cliente - tornando isActive: "true" turn "false"
+//remove automaticamente o cliente alvo do perfil do advogado
 customerRouter.delete(
     "/:customerId",
     isAuth,

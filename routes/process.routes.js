@@ -56,6 +56,7 @@ processRouter.get(
     }
 );
 
+//procurar um processo especifico
 processRouter.get(
     "/:processId",
     isAuth,
@@ -69,6 +70,22 @@ processRouter.get(
             return res.status(500).json(err);
         }
     }
-)
+);
+
+//procurar os processos de um advogado especifico
+processRouter.get(
+    "/:advogadoId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const AdvProcesses = await ProcessModel.findOne({ advogado: req.params.advogadoId });
+            return res.status(201).json(AdvProcesses);
+        } catch (err) {
+            console.log(`Erro em processRouter.get/one Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
 
 export { processRouter }

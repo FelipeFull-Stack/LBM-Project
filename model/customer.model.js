@@ -13,9 +13,9 @@ const customerSchema = new Schema({
     age: { type: Number },
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],
-    process: { type: Types.ObjectId, ref: "Process" },
-    meeting: { type: Types.ObjectId, ref: "Meeting" },
-    advogado: { type: Types.ObjectId, ref: "User" },
+    process: { type: Types.ObjectId, ref: "Process" },//one-to-one
+    meeting: { type: Types.ObjectId, ref: "Meeting" },//one-to-one
+    advogado: { type: Types.ObjectId, ref: "User" },  //one-to-one
 });
 
 export const CustomerModel = model("Customer", customerSchema)

@@ -94,4 +94,23 @@ meetingRouter.get(
     }
 );
 
+meetingRouter.put(
+    "/:meetingId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const AlteredMeeting = await MeetingModel.findOneAndUpdate(
+                { _id: req.params.meetingId },
+                { ...req.body, $push: { updateAt: new Date(Date.now()) } },
+                { runValidators: true }
+            );
+            return res.status(200).json(AlteredMeeting);
+        } catch (err) {
+            console.log(`Erro em meetingRouter.put Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { meetingRouter }

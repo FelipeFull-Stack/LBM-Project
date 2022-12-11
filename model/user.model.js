@@ -9,13 +9,23 @@ const userSchema = new Schema({
         trim: true,
         match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm
     },
+    age: { type: Number },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],
     isActive: { type: Boolean, default: "true" }, //usar para fazer verificação de email
-    age: { type: Number },
-    function: { type: String, enum: ["ADVOGADO-INICIANTE", "ADVOGADO-INTERMEDIARIO", "ADVOGADO-SENIOR", "SECRETARIA", "ESTAGIARIO", "DONO"] },
+    function: {
+        type: String,
+        enum: [
+            "ADVOGADO-INICIANTE",
+            "ADVOGADO-INTERMEDIARIO",
+            "ADVOGADO-SENIOR",
+            "SECRETARIA",
+            "ESTAGIARIO",
+            "DONO"
+        ]
+    },
     atuation: {
         type: String, enum: [
             "DIREITO DO TRABALHO",
@@ -35,7 +45,10 @@ const userSchema = new Schema({
             "MARCAS E PATENTES",
             "DIREITO TRIBUTARIO OU FISCAL"
         ]
-    }
+    },
+    meetings: { type: Types.ObjectId, ref: "Meeting" },
+    processes: { type: Types.ObjectId, ref: "Process" },
+    custumers: { type: Types.ObjectId, ref: "Customer" }
 })
 
 export const UserModel = model("User", userSchema)

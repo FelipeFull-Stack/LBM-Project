@@ -42,4 +42,19 @@ customerRouter.get(
     }
 );
 
+customerRouter.get(
+    "/:customerId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const customer = await CustomerModel.findOne({ _id: req.params.customerId });
+            return res.status(200).json(customer);
+        } catch (err) {
+            console.log(`Erro em CustomerRouter.get/one Back-end: ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+);
+
 export { customerRouter }

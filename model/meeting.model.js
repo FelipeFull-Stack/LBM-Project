@@ -10,6 +10,8 @@ const meetingSchema = new Schema({
             "JUSTIFICACAO"
         ]
     },
+    // content: { type: String },
+
     advogado: { type: Types.ObjectId, ref: "User" },    //one-to-one
     customer: { type: Types.ObjectId, ref: "Customer" },//one-to-one
     process: { type: Types.ObjectId, ref: "Process" }   //one-to-one

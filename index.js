@@ -19,6 +19,8 @@ app.use("/user", userRouter);                //acessa rota de Usuário / Advogad
 app.use("/process", processRouter);          //acessa rota de Processos
 app.use("/meeting", meetingRouter);          //acessa rota de Reuniões
 app.use("/customer", customerRouter);        //acessa rota de Clientes
+
+//rotas extras
 app.use("/upload-image", uploadImageRouter); //acessa rota de upload
 
 app.listen(Number(process.env.PORT), () => {

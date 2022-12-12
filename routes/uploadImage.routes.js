@@ -5,7 +5,7 @@ const uploadImageRouter = express.Router();
 
 uploadImageRouter.post(
     "/",
-    uploadImgMulter.single("pictures"),
+    uploadImgMulter.single("picture"),
     (req, res) => {
         if (!req.file) {
             return res.status(400).json({ msg: "Upload falhou..." });

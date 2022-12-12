@@ -1,6 +1,6 @@
 import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
-import isAdmin from "../middlewares/isAdmin.js";
+// import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
 import { ProcessModel } from "../model/process.model.js";
 import { CustomerModel } from "../model/customer.model.js";
@@ -17,19 +17,19 @@ processRouter.post(
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
-            const newProcess = ProcessModel.create({
+            const newProcess = await ProcessModel.create({
                 ...req.body,
                 advogado: loggedInUser._id,
                 customer: req.params.customerId
             });
             await UserModel.findOneAndUpdate(
                 { _id: loggedInUser._id },
-                { $push: { processes: newProcess._doc._id } },
+                { $push: { processes: newProcess._id } },
                 { runValidators: true }
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { process: newProcess._doc._id },
+                { process: newProcess._id },
                 { runValidators: true }
             );
             return res.status(201).json(newProcess);

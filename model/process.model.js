@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 
 const processSchema = new Schema({
-    numProcess: { type: Number, required: true, trim: true },
+    numProcess: { type: Number, required: true },
     type: {
         type: String,
         enum: [
@@ -29,6 +29,7 @@ const processSchema = new Schema({
         required: true,
         trim: true
     },
+
     isActive: { type: Boolean, default: true },
     advogado: { type: Types.ObjectId, ref: "User" },    //one-to-one
     customer: { type: Types.ObjectId, ref: "Customer" },//one-to-one

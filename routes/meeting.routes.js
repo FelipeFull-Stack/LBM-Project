@@ -1,6 +1,6 @@
 import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
-import isAdmin from "../middlewares/isAdmin.js";
+// import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
 import { MeetingModel } from "../model/meeting.model.js";
 import { UserModel } from "../model/user.model.js";
@@ -18,25 +18,27 @@ meetingRouter.post(
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
-            const newMeeting = MeetingModel.create({
+            const customer = await CustomerModel.findOne({_id: req.params.customerId});
+            const newMeeting = await MeetingModel.create({
                 ...req.body,
                 advogado: loggedInUser._id,
                 customer: req.params.customerId,
-                process: req.params.customerId._doc.process
+                process: customer.process
             });
+            console.log(newMeeting);
             await UserModel.findOneAndUpdate(
                 { _id: loggedInUser._id },
-                { $push: { meetings: newMeeting._doc._id } },
+                { $push: { meetings: newMeeting._id } },
                 { runValidators: true }
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { meeting: newMeeting._doc._id },
+                { meeting: newMeeting._id },
                 { runValidators: true }
             );
             await ProcessModel.findOneAndUpdate(
                 { _id: req.params.customerId._doc.process },
-                { meeting: newMeeting._doc._id },
+                { meeting: newMeeting._id },
                 { runValidators: true }
             );
             return res.status(201).json(newMeeting);

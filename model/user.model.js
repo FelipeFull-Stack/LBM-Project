@@ -23,7 +23,8 @@ const userSchema = new Schema({
             "ADVOGADO-SENIOR",
             "SECRETARIA",
             "ESTAGIARIO",
-            "DONO"
+            "DONO",
+            "DEV"
         ]
     },
     atuation: {
@@ -49,6 +50,6 @@ const userSchema = new Schema({
     meetings: [{ type: Types.ObjectId, ref: "Meeting" }], //one-to-many
     processes: [{ type: Types.ObjectId, ref: "Process" }],//one-to-many
     custumers: [{ type: Types.ObjectId, ref: "Customer" }]//one-to-many
-})
+});
 
 export const UserModel = model("User", userSchema)

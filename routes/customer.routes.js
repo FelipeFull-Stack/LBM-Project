@@ -1,6 +1,6 @@
 import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
-import isAdmin from "../middlewares/isAdmin.js";
+// import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
 import { CustomerModel } from "../model/customer.model.js";
 import { UserModel } from "../model/user.model.js";
@@ -16,13 +16,13 @@ customerRouter.post(
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
-            const newCustomer = CustomerModel.create({
+            const newCustomer = await CustomerModel.create({
                 ...req.body,
                 advogado: loggedInUser._id
             });
             await UserModel.findOneAndUpdate(
                 { _id: loggedInUser._id },
-                { $push: { custumers: newCustomer._doc._id } },
+                { $push: { custumers: newCustomer._id } },
                 { runValidators: true }
             );
             return res.status(201).json(newCustomer);

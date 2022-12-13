@@ -18,7 +18,7 @@ meetingRouter.post(
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
-            const customer = await CustomerModel.findOne({_id: req.params.customerId});
+            const customer = await CustomerModel.findOne({ _id: req.params.customerId });
             const newMeeting = await MeetingModel.create({
                 ...req.body,
                 advogado: loggedInUser._id,
@@ -37,7 +37,7 @@ meetingRouter.post(
                 { runValidators: true }
             );
             await ProcessModel.findOneAndUpdate(
-                { _id: req.params.customerId._doc.process },
+                { _id: customer.process },
                 { meeting: newMeeting._id },
                 { runValidators: true }
             );

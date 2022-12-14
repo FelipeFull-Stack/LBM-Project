@@ -16,9 +16,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/user", userRouter);                //acessa rota de Usuário / Advogado
+app.use("/customer", customerRouter);        //acessa rota de Clientes
 app.use("/process", processRouter);          //acessa rota de Processos
 app.use("/meeting", meetingRouter);          //acessa rota de Reuniões
-app.use("/customer", customerRouter);        //acessa rota de Clientes
 
 //rotas extras
 app.use("/upload-image", uploadImageRouter); //acessa rota de upload

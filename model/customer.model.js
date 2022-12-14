@@ -11,6 +11,7 @@ const customerSchema = new Schema({
     },
     cpf: { type: Number, required: true },
     age: { type: Number },
+    phone: { type: Number },
 
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],

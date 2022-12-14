@@ -16,6 +16,12 @@ customerRouter.post(
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
+            const existCPF = await CustomerModel.findOne({
+                cpf: req.body.cpf
+            })
+            if(existCPF) {
+                return res.status(500).json({msg: "Usuário já cadastrado!"});
+            }
             const newCustomer = await CustomerModel.create({
                 ...req.body,
                 advogado: loggedInUser._id

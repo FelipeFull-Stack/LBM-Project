@@ -5,6 +5,7 @@ import isAuth from "../middlewares/isAuth.js";
 import { ProcessModel } from "../model/process.model.js";
 import { CustomerModel } from "../model/customer.model.js";
 import { UserModel } from "../model/user.model.js";
+import { MeetingModel } from "../model/meeting.model.js";
 
 const processRouter = express.Router();
 
@@ -29,7 +30,7 @@ processRouter.post(
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { process: newProcess._id },
+                { $push: { processes: newProcess._id } },
                 { runValidators: true }
             );
             return res.status(201).json(newProcess);
@@ -122,15 +123,23 @@ processRouter.delete(
             await UserModel.findOneAndUpdate(
                 { processes: req.params.processId },
                 {
-                    $pull: { process: req.params.processId },
+                    $pull: { processes: req.params.processId },
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
             )
             await CustomerModel.findOneAndUpdate(
+                { processes: req.params.processId },
+                {
+                    $pull: { processes: req.params.processId },
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
+            await MeetingModel.findOneAndUpdate(
                 { process: req.params.processId },
                 {
-                    process: null,
+                    meeting: null,
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }

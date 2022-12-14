@@ -2,6 +2,7 @@ import { Schema, model, Types } from "mongoose";
 
 const meetingSchema = new Schema({
     date: { type: Date, required: true },
+    time: { type: Number, required: true },
     type: {
         type: String,
         enum: [

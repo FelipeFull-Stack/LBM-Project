@@ -33,7 +33,7 @@ meetingRouter.post(
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { meeting: newMeeting._id },
+                { $push: { meetings: newMeeting._id } },
                 { runValidators: true }
             );
             await ProcessModel.findOneAndUpdate(
@@ -134,9 +134,9 @@ meetingRouter.delete(
                 { runValidators: true }
             );
             await CustomerModel.findOneAndUpdate(
-                { meeting: req.params.meetingId },
+                { meetings: req.params.meetingId },
                 {
-                    meeting: null,
+                    $pull: { meetings: req.params.meetingId },
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }

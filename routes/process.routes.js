@@ -2,6 +2,7 @@ import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
+// import isActive from "../middlewares/isActive";
 import { ProcessModel } from "../model/process.model.js";
 import { CustomerModel } from "../model/customer.model.js";
 import { UserModel } from "../model/user.model.js";
@@ -30,7 +31,7 @@ processRouter.post(
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { $push: { processes: newProcess._id } },
+                { process: newProcess._id },
                 { runValidators: true }
             );
             return res.status(201).json(newProcess);
@@ -64,7 +65,7 @@ processRouter.get(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const process = await ProcessModel.findOne({ _id: req.params.processId });
+            const process = await ProcessModel.findOne({ _id: req.params.processId }).populate("advogado").populate("customer").populate("meeting");
             return res.status(201).json(process);
         } catch (err) {
             console.log(`Erro em processRouter.get/one Back-end: ${err}`);
@@ -115,11 +116,7 @@ processRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const DesactivProcess = await ProcessModel.findOneAndUpdate(
-                { _id: req.params.processId },
-                { isActive: false, $push: { updateAt: new Date(Date.now()) } },
-                { runValidators: true }
-            );
+            const DesactivProcess = await ProcessModel.deleteOne({ _id: req.params.processId });
             await UserModel.findOneAndUpdate(
                 { processes: req.params.processId },
                 {
@@ -127,23 +124,24 @@ processRouter.delete(
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
             await CustomerModel.findOneAndUpdate(
                 { processes: req.params.processId },
                 {
-                    $pull: { processes: req.params.processId },
+                    process: 0,
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
             await MeetingModel.findOneAndUpdate(
                 { process: req.params.processId },
                 {
-                    meeting: null,
+                    meeting: 0,
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
+            return res.status(200).json(DesactivProcess);
         } catch (err) {
             console.log(`Erro em processRouter.delete Back-end: ${err}`);
             return res.status(500).json(err);

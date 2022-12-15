@@ -4,8 +4,12 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt.config.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAuth from "../middlewares/isAuth.js";
+// import isActive from "../middlewares/isActive";
 // import isAdmin from "../middlewares/isAdmin.js";
 import { UserModel } from "../model/user.model.js";
+import { MeetingModel } from "../model/meeting.model.js";
+import { CustomerModel } from "../model/customer.model.js";
+import { ProcessModel } from "../model/process.model.js";
 
 dotenv.config();
 const userRouter = express.Router();
@@ -63,7 +67,7 @@ userRouter.post("/login", async (req, res) => {
                 role: user.role
             },
             token: token
-        })
+        });
     } catch (err) {
         console.log(`Erro no login Backend: ${err}`);
         return res.status(500).json(err);
@@ -72,7 +76,7 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const loggendInUser = req.currentUser;
+        const loggendInUser = await UserModel.findOne({ _id: req.currentUser._id }).populate("custumers").populate("processes").populate("meetings");
         return res.status(200).json(loggendInUser);
     } catch (err) {
         console.log(`Erro no profile Backend: ${err}`);
@@ -80,7 +84,23 @@ userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     }
 })
 
-
+userRouter.delete(
+    "/:userId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const deletedUser = UserModel.deleteOne({ _id: loggendInUser._id });
+            await MeetingModel.deleteMany({ advogado: deletedUser._id });
+            await CustomerModel.deleteMany({ advogado: deletedUser._id });
+            await ProcessModel.deleteMany({ advogado: deletedUser._id });
+            return res.status(200).json(deletedUser)
+        } catch (err) {
+            console.log(`Erro em userRouter.delete - Back-end : ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+)
 
 
 

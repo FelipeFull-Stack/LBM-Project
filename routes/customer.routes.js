@@ -21,7 +21,7 @@ customerRouter.post(
             const loggedInUser = req.currentUser;
             const existCPF = await CustomerModel.findOne({
                 cpf: req.body.cpf
-            })
+            });
             if (existCPF) {
                 return res.status(500).json({ msg: "Usuário já cadastrado!" });
             }
@@ -99,7 +99,10 @@ customerRouter.put(
         try {
             const alteredCustomer = await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { ...req.body, $push: { updateAt: new Date(Date.now()) } },
+                {
+                    ...req.body,
+                    $push: { updateAt: new Date(Date.now()) }
+                },
                 { runValidators: true }
             );
             return res.status(200).json(alteredCustomer);
@@ -118,7 +121,7 @@ customerRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const DesactivCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId })
+            const DesactivCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId });
             await UserModel.findOneAndUpdate(
                 { customers: req.params.customerId },
                 {
@@ -126,7 +129,7 @@ customerRouter.delete(
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
             await ProcessModel.findOneAndUpdate(
                 { customer: DesactivCustomer._id },
                 {
@@ -134,7 +137,7 @@ customerRouter.delete(
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
             await MeetingModel.findOneAndUpdate(
                 { customer: DesactivCustomer._id },
                 {
@@ -142,7 +145,7 @@ customerRouter.delete(
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
-            )
+            );
             return res.status(200).json(DesactivCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);

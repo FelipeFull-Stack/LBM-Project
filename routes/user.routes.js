@@ -67,7 +67,7 @@ userRouter.post("/login", async (req, res) => {
                 role: user.role
             },
             token: token
-        })
+        });
     } catch (err) {
         console.log(`Erro no login Backend: ${err}`);
         return res.status(500).json(err);
@@ -77,7 +77,6 @@ userRouter.post("/login", async (req, res) => {
 userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     try {
         const loggendInUser = await UserModel.findOne({ _id: req.currentUser._id }).populate("custumers").populate("processes").populate("meetings");
-        // const advogado = await UserModel.findOne({ _id: req.params.advogadoId }).populate("customers").populate("processes").populate("meetings");
         return res.status(200).json(loggendInUser);
     } catch (err) {
         console.log(`Erro no profile Backend: ${err}`);

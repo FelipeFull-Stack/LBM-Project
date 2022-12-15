@@ -2,6 +2,7 @@ import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
+import isActive from "../middlewares/isActive.js";
 import { MeetingModel } from "../model/meeting.model.js";
 import { UserModel } from "../model/user.model.js";
 import { ProcessModel } from "../model/process.model.js";
@@ -15,6 +16,7 @@ meetingRouter.post(
     "/:customerId",
     isAuth,
     attachCurrentUser,
+    isActive,
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
@@ -33,7 +35,7 @@ meetingRouter.post(
             );
             await CustomerModel.findOneAndUpdate(
                 { _id: req.params.customerId },
-                { $push: { meetings: newMeeting._id } },
+                { meeting: newMeeting._id },
                 { runValidators: true }
             );
             await ProcessModel.findOneAndUpdate(
@@ -54,6 +56,7 @@ meetingRouter.get(
     "/",
     isAuth,
     attachCurrentUser,
+    isActive,
     async (req, res) => {
         try {
             const meetings = await MeetingModel.find({});
@@ -71,7 +74,7 @@ meetingRouter.get(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const meeting = await MeetingModel.findOne({ _id: req.params.meetingId });
+            const meeting = await MeetingModel.findOne({ _id: req.params.meetingId }).populate("advogado").populate("customer").populate("process");
             return res.status(200).json(meeting);
         } catch (err) {
             console.log(`Erro em meetingRouter.get/One Back-end ${err}`);
@@ -85,9 +88,10 @@ meetingRouter.get(
     "/:advogadoId",
     isAuth,
     attachCurrentUser,
+    isActive,
     async (req, res) => {
         try {
-            const AdvMeetings = await MeetingModel.findOne({ advogado: req.params.advogadoId });
+            const AdvMeetings = await MeetingModel.findOne({ advogado: req.params.advogadoId }).populate("advogado").populate("customer").populate("process");
             return res.status(201).json(AdvMeetings);
         } catch (err) {
             console.log(`Erro em meetingRouter.get/advMeetings/all Back-end: ${err}`);
@@ -101,6 +105,7 @@ meetingRouter.put(
     "/:meetingId",
     isAuth,
     attachCurrentUser,
+    isActive,
     async (req, res) => {
         try {
             const AlteredMeeting = await MeetingModel.findOneAndUpdate(
@@ -122,6 +127,7 @@ meetingRouter.delete(
     "/:meetingId",
     isAuth,
     attachCurrentUser,
+    isActive,
     async (req, res) => {
         try {
             const deletedMeeting = await MeetingModel.deleteOne({ _id: req.params.meetingId });
@@ -136,7 +142,7 @@ meetingRouter.delete(
             await CustomerModel.findOneAndUpdate(
                 { meetings: req.params.meetingId },
                 {
-                    $pull: { meetings: req.params.meetingId },
+                    meeting: 0,
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
@@ -144,7 +150,7 @@ meetingRouter.delete(
             await ProcessModel.findOneAndUpdate(
                 { meeting: req.params.meetingId },
                 {
-                    meeting: null,
+                    meeting: 0,
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }

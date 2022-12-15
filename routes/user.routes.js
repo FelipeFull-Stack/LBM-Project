@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt.config.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAuth from "../middlewares/isAuth.js";
+import isActive from "../middlewares/isActive.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import { UserModel } from "../model/user.model.js";
 
@@ -40,7 +41,7 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/login", isActive, async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await UserModel.findOne({ email: email });
@@ -72,7 +73,8 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const loggendInUser = req.currentUser;
+        const loggendInUser = await UserModel.findOne({ _id: req.currentUser._id }).populate("custumers").populate("processes").populate("meetings");
+        // const advogado = await UserModel.findOne({ _id: req.params.advogadoId }).populate("customers").populate("processes").populate("meetings");
         return res.status(200).json(loggendInUser);
     } catch (err) {
         console.log(`Erro no profile Backend: ${err}`);
@@ -80,7 +82,27 @@ userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
     }
 })
 
+userRouter.delete(
+    "/:userId",
+    isAuth,
+    attachCurrentUser,
+    async (req, res) => {
+        try {
+            const deletedUser = UserModel.findOneAndUpdate(
+                { _id: loggendInUser._id },
+                {
+                    isActive: false,
+                    $push: { updateAt: new Date(Date.now()) }
+                },
+                { runValidators: true }
+            )
 
+        } catch (err) {
+            console.log(`Erro em userRouter.delete - Back-end : ${err}`);
+            return res.status(500).json(err);
+        }
+    }
+)
 
 
 

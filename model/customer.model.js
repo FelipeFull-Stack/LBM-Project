@@ -17,8 +17,8 @@ const customerSchema = new Schema({
     updateAt: [{ type: Date }],
 
     advogado: { type: Types.ObjectId, ref: "User" },  //one-to-one
-    processes: [{ type: Types.ObjectId, ref: "Process" }],//one-to-one
-    meetings: [{ type: Types.ObjectId, ref: "Meeting" }],//one-to-one
+    process: { type: Types.ObjectId, ref: "Process" },//one-to-one
+    meeting: { type: Types.ObjectId, ref: "Meeting" },//one-to-one
 });
 
 export const CustomerModel = model("Customer", customerSchema)

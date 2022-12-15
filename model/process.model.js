@@ -29,6 +29,7 @@ const processSchema = new Schema({
         required: true,
         trim: true
     },
+    cpf: { type: Number },
     isActive: { type: Boolean, default: true },
 
     advogado: { type: Types.ObjectId, ref: "User" },    //one-to-one

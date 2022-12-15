@@ -47,6 +47,7 @@ const userSchema = new Schema({
             "DIREITO TRIBUTARIO OU FISCAL"
         ]
     },
+    cpf: { type: Number },
     meetings: [{ type: Types.ObjectId, ref: "Meeting" }], //one-to-many
     processes: [{ type: Types.ObjectId, ref: "Process" }],//one-to-many
     custumers: [{ type: Types.ObjectId, ref: "Customer" }]//one-to-many

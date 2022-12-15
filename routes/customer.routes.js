@@ -118,11 +118,7 @@ customerRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const DesactivCustomer = await CustomerModel.findOne(
-                { _id: req.params.customerId },
-                { isActive: false, $push: { updateAt: new Date(Date.now()) } },
-                { runValidators: true }
-            );
+            const DesactivCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId })
             await UserModel.findOneAndUpdate(
                 { customers: req.params.customerId },
                 {

@@ -7,6 +7,9 @@ import isAuth from "../middlewares/isAuth.js";
 // import isActive from "../middlewares/isActive";
 // import isAdmin from "../middlewares/isAdmin.js";
 import { UserModel } from "../model/user.model.js";
+import { MeetingModel } from "../model/meeting.model.js";
+import { CustomerModel } from "../model/customer.model.js";
+import { ProcessModel } from "../model/process.model.js";
 
 dotenv.config();
 const userRouter = express.Router();
@@ -88,15 +91,11 @@ userRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const deletedUser = UserModel.findOneAndUpdate(
-                { _id: loggendInUser._id },
-                {
-                    isActive: false,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            )
-
+            const deletedUser = UserModel.deleteOne({ _id: loggendInUser._id });
+            await MeetingModel.deleteMany({ advogado: deletedUser._id });
+            await CustomerModel.deleteMany({ advogado: deletedUser._id });
+            await ProcessModel.deleteMany({ advogado: deletedUser._id });
+            return res.status(200).json(deletedUser)
         } catch (err) {
             console.log(`Erro em userRouter.delete - Back-end : ${err}`);
             return res.status(500).json(err);

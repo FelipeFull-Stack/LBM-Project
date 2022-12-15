@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt.config.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAuth from "../middlewares/isAuth.js";
-import isActive from "../middlewares/isActive.js";
+// import isActive from "../middlewares/isActive";
 // import isAdmin from "../middlewares/isAdmin.js";
 import { UserModel } from "../model/user.model.js";
 
@@ -41,7 +41,7 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-userRouter.post("/login", isActive, async (req, res) => {
+userRouter.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await UserModel.findOne({ email: email });

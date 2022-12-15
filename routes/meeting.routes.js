@@ -2,7 +2,7 @@ import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
-import isActive from "../middlewares/isActive.js";
+// import isActive from "../middlewares/isActive";
 import { MeetingModel } from "../model/meeting.model.js";
 import { UserModel } from "../model/user.model.js";
 import { ProcessModel } from "../model/process.model.js";
@@ -16,7 +16,6 @@ meetingRouter.post(
     "/:customerId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
@@ -56,7 +55,6 @@ meetingRouter.get(
     "/",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const meetings = await MeetingModel.find({});
@@ -88,7 +86,6 @@ meetingRouter.get(
     "/:advogadoId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const AdvMeetings = await MeetingModel.findOne({ advogado: req.params.advogadoId }).populate("advogado").populate("customer").populate("process");
@@ -105,7 +102,6 @@ meetingRouter.put(
     "/:meetingId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const AlteredMeeting = await MeetingModel.findOneAndUpdate(
@@ -127,7 +123,6 @@ meetingRouter.delete(
     "/:meetingId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const deletedMeeting = await MeetingModel.deleteOne({ _id: req.params.meetingId });

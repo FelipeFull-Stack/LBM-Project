@@ -14,7 +14,7 @@ const userSchema = new Schema({
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],
-    // isActive: { type: Boolean, default: true }, //usar para fazer verificação de email
+    isActive: { type: Boolean, default: true }, //usar para fazer verificação de email
     function: {
         type: String,
         enum: [

@@ -1,0 +1,13 @@
+async function isActive(req, res, next) {
+    try {
+        const user = req.currentUser;
+        if (user.isActive !== true) {
+            return res.status(401).json({ msg: "Conta deletada!" });
+        }
+        next();
+    } catch (err) {
+        console.log(`Erro no isActive.js : ${err}`);
+        return res.status(500).json(err);
+    }
+}
+export default isActive

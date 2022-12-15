@@ -2,7 +2,7 @@ import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
-import isActive from "../middlewares/isActive.js";
+// import isActive from "../middlewares/isActive";
 import { ProcessModel } from "../model/process.model.js";
 import { CustomerModel } from "../model/customer.model.js";
 import { UserModel } from "../model/user.model.js";
@@ -16,7 +16,6 @@ processRouter.post(
     "/:customerId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
@@ -48,7 +47,6 @@ processRouter.get(
     "/",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const processes = await ProcessModel.find({});
@@ -65,7 +63,6 @@ processRouter.get(
     "/:processId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const process = await ProcessModel.findOne({ _id: req.params.processId }).populate("advogado").populate("customer").populate("meeting");
@@ -82,7 +79,6 @@ processRouter.get(
     "/:advogadoId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const AdvProcesses = await ProcessModel.findOne({ advogado: req.params.advogadoId });
@@ -99,7 +95,6 @@ processRouter.put(
     "/:processId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const alteredProcess = await ProcessModel.findOneAndUpdate(
@@ -119,7 +114,6 @@ processRouter.delete(
     "/:processId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const DesactivProcess = await ProcessModel.findOneAndUpdate(

@@ -2,7 +2,7 @@ import express from "express";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 // import isAdmin from "../middlewares/isAdmin.js";
 import isAuth from "../middlewares/isAuth.js";
-import isActive from "../middlewares/isActive.js";
+// import isActive from "../middlewares/isActive";
 import { CustomerModel } from "../model/customer.model.js";
 import { MeetingModel } from "../model/meeting.model.js";
 import { ProcessModel } from "../model/process.model.js";
@@ -16,7 +16,6 @@ customerRouter.post(
     "/",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const loggedInUser = req.currentUser;
@@ -48,7 +47,6 @@ customerRouter.get(
     "/",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const customers = await CustomerModel.find({});
@@ -65,7 +63,6 @@ customerRouter.get(
     "/:customerId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const customer = await CustomerModel.findOne({ _id: req.params.customerId }).populate("advogado").populate("processes").populate("meetings");
@@ -82,7 +79,6 @@ customerRouter.get(
     "/:advogadoId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const AdvCustomers = await CustomerModel.findOne({ advogado: req.params.advogadoId });
@@ -99,7 +95,6 @@ customerRouter.put(
     "/:customerId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const alteredCustomer = await CustomerModel.findOneAndUpdate(
@@ -121,7 +116,6 @@ customerRouter.delete(
     "/:customerId",
     isAuth,
     attachCurrentUser,
-    isActive,
     async (req, res) => {
         try {
             const DesactivCustomer = await CustomerModel.findOne(

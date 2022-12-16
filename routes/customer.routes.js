@@ -121,7 +121,7 @@ customerRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const DesactivCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId });
+            const deletedCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId });
             await UserModel.findOneAndUpdate(
                 { customers: req.params.customerId },
                 {
@@ -130,23 +130,9 @@ customerRouter.delete(
                 },
                 { runValidators: true }
             );
-            await ProcessModel.findOneAndUpdate(
-                { customer: DesactivCustomer._id },
-                {
-                    customer: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
-            await MeetingModel.findOneAndUpdate(
-                { customer: DesactivCustomer._id },
-                {
-                    customer: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
-            return res.status(200).json(DesactivCustomer);
+            await ProcessModel.deleteOne({ customer: deletedCustomer._id });
+            await MeetingModel.deleteOne({ customer: deletedCustomer._id });
+            return res.status(200).json(deletedCustomer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.delete (isActive?) Back-end: ${err}`);
             return res.status(500).json(err);

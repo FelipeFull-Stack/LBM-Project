@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 
 const processSchema = new Schema({
-    numProcess: { type: Number, required: true },
+    numProcess: { type: String, required: true },
     type: {
         type: String,
         enum: [

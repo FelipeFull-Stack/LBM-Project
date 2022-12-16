@@ -134,22 +134,8 @@ meetingRouter.delete(
                 },
                 { runValidators: true }
             );
-            await CustomerModel.findOneAndUpdate(
-                { meetings: req.params.meetingId },
-                {
-                    meeting: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
-            await ProcessModel.findOneAndUpdate(
-                { meeting: req.params.meetingId },
-                {
-                    meeting: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
+            await CustomerModel.deleteOne({ meeting: req.params.meetingId });
+            await ProcessModel.deleteOne({ meeting: req.params.meetingId });
             return res.status(200).json(deletedMeeting);
         } catch (err) {
             console.log(`Erro em meetingRouter.delete Back-end: ${err}`);

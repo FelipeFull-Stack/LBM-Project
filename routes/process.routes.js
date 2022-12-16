@@ -116,7 +116,7 @@ processRouter.delete(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const DesactivProcess = await ProcessModel.deleteOne({ _id: req.params.processId });
+            const deletedProcess = await ProcessModel.deleteOne({ _id: req.params.processId });
             await UserModel.findOneAndUpdate(
                 { processes: req.params.processId },
                 {
@@ -125,23 +125,9 @@ processRouter.delete(
                 },
                 { runValidators: true }
             );
-            await CustomerModel.findOneAndUpdate(
-                { processes: req.params.processId },
-                {
-                    process: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
-            await MeetingModel.findOneAndUpdate(
-                { process: req.params.processId },
-                {
-                    meeting: 0,
-                    $push: { updateAt: new Date(Date.now()) }
-                },
-                { runValidators: true }
-            );
-            return res.status(200).json(DesactivProcess);
+            await CustomerModel.deleteOne({ process: req.params.processId });
+            await MeetingModel.deleteOne({ process: req.params.processId });
+            return res.status(200).json(deletedProcess);
         } catch (err) {
             console.log(`Erro em processRouter.delete Back-end: ${err}`);
             return res.status(500).json(err);

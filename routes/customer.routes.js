@@ -123,9 +123,9 @@ customerRouter.delete(
         try {
             const deletedCustomer = await CustomerModel.deleteOne({ _id: req.params.customerId });
             await UserModel.findOneAndUpdate(
-                { customers: req.params.customerId },
+                { custumers: deletedCustomer._id},
                 {
-                    $pull: { customers: req.params.customerId },
+                    $pull: { custumers: deletedCustomer._id },
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }

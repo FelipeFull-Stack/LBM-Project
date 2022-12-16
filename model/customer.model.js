@@ -9,9 +9,9 @@ const customerSchema = new Schema({
         trim: true,
         match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/gm
     },
-    cpf: { type: Number, required: true },
-    age: { type: Number },
-    phone: { type: Number },
+    cpf: { type: String, required: true },
+    age: { type: String },
+    phone: { type: String },
 
     createdAt: { type: Date, default: new Date(Date.now()) },
     updateAt: [{ type: Date }],

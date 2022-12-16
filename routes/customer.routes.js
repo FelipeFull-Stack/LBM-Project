@@ -65,7 +65,7 @@ customerRouter.get(
     attachCurrentUser,
     async (req, res) => {
         try {
-            const customer = await CustomerModel.findOne({ _id: req.params.customerId }).populate("advogado").populate("processes").populate("meetings");
+            const customer = await CustomerModel.findOne({ _id: req.params.customerId }).populate("advogado").populate("process").populate("meeting");
             return res.status(200).json(customer);
         } catch (err) {
             console.log(`Erro em CustomerRouter.get/one Back-end: ${err}`);

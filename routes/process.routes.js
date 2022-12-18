@@ -118,15 +118,15 @@ processRouter.delete(
         try {
             const deletedProcess = await ProcessModel.deleteOne({ _id: req.params.processId });
             await UserModel.findOneAndUpdate(
-                { processes: req.params.processId },
+                { processes: deletedProcess._id },
                 {
-                    $pull: { processes: req.params.processId },
+                    $pull: { processes: deletedProcess._id },
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
             );
-            await CustomerModel.deleteOne({ process: req.params.processId });
-            await MeetingModel.deleteOne({ process: req.params.processId });
+            await CustomerModel.deleteOne({ process: deletedProcess._id });
+            await MeetingModel.deleteOne({ process: deletedProcess._id });
             return res.status(200).json(deletedProcess);
         } catch (err) {
             console.log(`Erro em processRouter.delete Back-end: ${err}`);

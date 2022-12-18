@@ -127,16 +127,16 @@ meetingRouter.delete(
         try {
             const deletedMeeting = await MeetingModel.deleteOne({ _id: req.params.meetingId });
             await UserModel.findOneAndUpdate(
-                { meetings: req.params.meetingId },
+                { meetings: deletedMeeting._id },
                 {
-                    $pull: { meetings: req.params.meetingId },
+                    $pull: { meetings: deletedMeeting._id },
                     $push: { updateAt: new Date(Date.now()) }
                 },
                 { runValidators: true }
             );
-            await CustomerModel.deleteOne({ meeting: req.params.meetingId });
-            await ProcessModel.deleteOne({ meeting: req.params.meetingId });
-            return res.status(200).json(deletedMeeting);
+            await CustomerModel.deleteOne({ meeting: deletedMeeting._id });
+            await ProcessModel.deleteOne({ meeting: deletedMeeting._id });
+            return res.status(200).json(deletedMeeting); F
         } catch (err) {
             console.log(`Erro em meetingRouter.delete Back-end: ${err}`);
             return res.status(500).json(err);

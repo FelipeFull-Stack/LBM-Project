@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 dbConnection();
 
-app.use(cors({ origin: process.env.REACT_APP_URL }));
+app.use(cors({ origin: process.env.REACT_APP_URL }));//
 app.use(express.json());
 
 app.use("/user", userRouter);                //acessa rota de Usuário / Advogado
